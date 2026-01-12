@@ -25,5 +25,12 @@ export VAULT_TOKEN=root
 ```
 ./vault-setup.sh
 ```
-4. Copy the token from the output into the Cribl KMS settings
+4. Copy the token from the output into the Cribl KMS settings.  After the Cribl KMS settings are saved observe the cribl.secret file is now stored in HashiCorp Vault
+
+```
+http://127.0.0.1:8200
+```
+
+The username and password are both cribl
+
 5. Use external tooling to renew the token on a schedule via the accessor value.  This script uses a 10min token expiry for the purpose of demonstration.  In a real deployment the token would have a longer TTL 
