@@ -50,36 +50,19 @@ path "secret/data/cribl" {
   capabilities = ["create", "read", "update", "delete", "list"]
 }
 
-path "secret/data/cribl/*" {
-  capabilities = ["create", "read", "update", "delete", "list"]
+# Allow Cribl user to create initial authentication token
+path "auth/token/create/cribl-kms-role" {
+  capabilities = ["create", "update", "sudo"]
 }
 
 # Allow Cribl to create child tokens
 path "auth/token/create" {
-  capabilities = ["create", "update"]
-}
-
-path "auth/token/create/*" {
-  capabilities = ["create", "update", "sudo"]
+  capabilities = ["update"]
 }
 
 # Allow Cribl to look up its own token
 path "auth/token/lookup-self" {
   capabilities = ["read"]
-}
-
-# Allow Cribl to renew its own token
-path "auth/token/renew-self" {
-  capabilities = ["update"]
-}
-
-# KV v2 metadata endpoint
-path "secret/metadata/cribl" {
-  capabilities = ["read", "list", "delete"]
-}
-
-path "secret/metadata/cribl/*" {
-  capabilities = ["read", "list", "delete"]
 }
 
 path "secret/*" {
@@ -103,6 +86,8 @@ echo "User 'cribl' created/updated successfully"
 #
 vault write auth/token/roles/cribl-kms-role \
     allowed_policies="cribl-policy" \
+    disallowed_policies="default" \
+    token_no_default_policy=true \
     orphan=true \
     period="5m" \
     renewable=true
@@ -128,15 +113,19 @@ vault login -method=userpass \
 
 echo "Creating Service token for Cribl"
 # Create a Service token with the same access as cribl-policy
-CRIBL_VAULT_KMS_TOKEN=$(vault token create \
+CRIBL_VAULT_KMS_TOKEN_DATA=$(vault token create \
   -role="cribl-kms-role" \
   -no-default-policy \
   -period="5m" \
-  -format=json | jq -r '.auth.client_token')
+  -format=json )
 
+mapfile -t CRIBL_VAULT_CREDS < <(echo $CRIBL_VAULT_KMS_TOKEN_DATA | jq -r '.auth.client_token, .auth.accessor')
+
+echo ""
 echo "Service token creation successful"
 echo ""
-echo "$CRIBL_VAULT_KMS_TOKEN"
+echo "token:" ${CRIBL_VAULT_CREDS[0]}
+echo "accessor:" ${CRIBL_VAULT_CREDS[1]}
 echo ""
 
-echo "=== Script complete ==="
+echo "=== Setup Complete ==="
