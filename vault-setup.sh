@@ -4,6 +4,12 @@ set -euo pipefail
 
 echo "=== Vault userpass setup script starting ==="
 
+# Ensure vault is installed
+if ! command -v vault &> /dev/null; then
+    echo "Error: Vault CLI not found. Please install it first."
+    exit 1
+fi
+
 #
 # Check environment variables
 #
@@ -106,26 +112,28 @@ echo "------------------------"
 unset VAULT_TOKEN
 
 # Create User Token
-echo "Logging in as user 'cribl' to retrieve token..."
+echo "Logging in as user 'cribl' to create periodic token for Cribl KMS..."
 vault login -method=userpass \
     username=cribl \
-    password="cribl" 
+    password="cribl" > /dev/null 2>&1
 
 echo "Creating Service token for Cribl"
 # Create a Service token with the same access as cribl-policy
 CRIBL_VAULT_KMS_TOKEN_DATA=$(vault token create \
   -role="cribl-kms-role" \
   -no-default-policy \
-  -period="5m" \
+  -period="10m" \
   -format=json )
 
 mapfile -t CRIBL_VAULT_CREDS < <(echo $CRIBL_VAULT_KMS_TOKEN_DATA | jq -r '.auth.client_token, .auth.accessor')
 
+RENEWAL_SCRIPT="/usr/local/bin/vault-renew-cribl.sh"
+export ACCESSOR=${CRIBL_VAULT_CREDS[1]}
+
 echo ""
 echo "Service token creation successful"
 echo ""
-echo "token:" ${CRIBL_VAULT_CREDS[0]}
-echo "accessor:" ${CRIBL_VAULT_CREDS[1]}
+echo "Cribl token:" ${CRIBL_VAULT_CREDS[0]}
+echo "Cribl token accessor:" ${CRIBL_VAULT_CREDS[1]}
 echo ""
-
 echo "=== Setup Complete ==="
