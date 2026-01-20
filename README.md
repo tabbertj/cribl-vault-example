@@ -6,7 +6,7 @@ Example Repo for Setting up Cribl to use HashiCorp Vault to store the Cribl mast
 ## Pre-reqs
 - HashiCorp Vault installed
 - jq installed
-- ensure environment variables VAULD_ADDR & VAULT_TOKEN are set
+- ensure environment variables VAULT_ADDR & VAULT_TOKEN are set
 
 ## Getting Started
 
