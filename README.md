@@ -1,7 +1,6 @@
-# cribl-vault-example
-Cribl Vault KMS Test
+# Cribl/HashiCorp Vault Integration
 
-Example Repo for Setting up Cribl to use HashiCorp Vault to store the Cribl master secret
+Example Repo for Setting up Cribl to use HashiCorp Vault to store the Cribl master secret 
 
 ## Pre-reqs
 - HashiCorp Vault installed
