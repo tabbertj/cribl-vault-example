@@ -158,8 +158,8 @@ echo "Cribl REST/API collector token:" $CRIBL_USER_TOKEN
 
 echo "------------------------------------------------"
 echo "Setup Complete!"
+echo ""
 echo "1. Put the 'Cribl KMS Token' into your Cribl KMS settings."
 echo "2. Put the REST/API token in the REST collector Job"
 echo "3. Every 30 days update the auth token in the REST collector Job"
 
-echo "=== Setup Complete ==="
