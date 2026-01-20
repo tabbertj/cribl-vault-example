@@ -71,6 +71,16 @@ path "auth/token/lookup-self" {
   capabilities = ["read"]
 }
 
+# Allow the token to renew itself
+path "auth/token/renew-self" {
+  capabilities = ["update"]
+}
+
+# Allow renewal via accessor
+path "auth/token/renew-accessor" {
+  capabilities = ["update"]
+}
+
 path "secret/*" {
   capabilities = ["list"]
 }
@@ -95,7 +105,7 @@ vault write auth/token/roles/cribl-kms-role \
     disallowed_policies="default" \
     token_no_default_policy=true \
     orphan=true \
-    period="5m" \
+    period="15m" \
     renewable=true
 
 # Write a test secret
@@ -111,29 +121,45 @@ echo "------------------------"
 
 unset VAULT_TOKEN
 
-# Create User Token
 echo "Logging in as user 'cribl' to create periodic token for Cribl KMS..."
-vault login -method=userpass \
+
+# Capture the token into an environment variable
+CRIBL_USER_TOKEN=$(vault login -method=userpass \
+    -field=token \
     username=cribl \
-    password="cribl" > /dev/null 2>&1
+    password="cribl")
+
+# Export it so subsequent vault commands use it automatically
+export VAULT_TOKEN="$CRIBL_USER_TOKEN"
+
+echo "User 'cribl' logged in successfully. Token captured."
 
 echo "Creating Service token for Cribl"
 # Create a Service token with the same access as cribl-policy
 CRIBL_VAULT_KMS_TOKEN_DATA=$(vault token create \
   -role="cribl-kms-role" \
   -no-default-policy \
-  -period="10m" \
+  -period="15m" \
   -format=json )
 
 mapfile -t CRIBL_VAULT_CREDS < <(echo $CRIBL_VAULT_KMS_TOKEN_DATA | jq -r '.auth.client_token, .auth.accessor')
 
-RENEWAL_SCRIPT="/usr/local/bin/vault-renew-cribl.sh"
 export ACCESSOR=${CRIBL_VAULT_CREDS[1]}
 
 echo ""
 echo "Service token creation successful"
 echo ""
-echo "Cribl token:" ${CRIBL_VAULT_CREDS[0]}
-echo "Cribl token accessor:" ${CRIBL_VAULT_CREDS[1]}
-echo ""
+echo "Cribl KMS token:" ${CRIBL_VAULT_CREDS[0]}
+echo "------------------------------------------------"
+echo "Cribl KMS token accessor:" ${CRIBL_VAULT_CREDS[1]}
+echo "------------------------------------------------"
+echo "Cribl REST/API collector token:" $CRIBL_USER_TOKEN
+
+
+echo "------------------------------------------------"
+echo "Setup Complete!"
+echo "1. Put the 'Cribl KMS Token' into your Cribl KMS settings."
+echo "2. Put the REST/API token in the REST collector Job"
+echo "3. Every 30 days update the auth token in the REST collector Job"
+
 echo "=== Setup Complete ==="
