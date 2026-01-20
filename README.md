@@ -10,27 +10,28 @@ Example Repo for Setting up Cribl to use HashiCorp Vault to store the Cribl mast
 
 ## Getting Started
 
-1. Clone the repository
-```
-git clone https://github.com/tabbertj/cribl-vault-example.git
-```
 
-2. Enter the directory
-```
-cd cribl-vault-example
-```
-
-3. Start a Vault Dev Server
+1. Start a Vault Dev Server
 ```
 vault server -dev -dev-root-token-id=root
 ```
-4. Set environment Variables
+2. On a new terminal set the Vault environment Variables
 ```
 export VAULT_ADDR='http://127.0.0.1:8200'
 ```
 ```
 export VAULT_TOKEN=root
 ```
+3. Clone the repository
+```
+git clone https://github.com/tabbertj/cribl-vault-example.git
+```
+
+4. Enter the directory
+```
+cd cribl-vault-example
+```
+
 5. Run the script
 ```
 ./vault-setup.sh
