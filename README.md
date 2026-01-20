@@ -44,6 +44,11 @@ The username and password are both cribl
 9. Use the vault token lookup command to validate the Vault KMS Token is being renewed.  You should see the TTL being refreshed as the job runs
 
 ```
-vault token lookup (Paste KMS Token Value from Step 3)
+vault token lookup (Paste KMS Token value from Step 3)
 ```
 
+OR
+
+```
+vault token lookup -accessor (Paste accessor value from Step 3)
+```
