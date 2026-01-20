@@ -1,6 +1,10 @@
 # Cribl/HashiCorp Vault Integration
 
-Example Repo for Setting up Cribl to use HashiCorp Vault to store the Cribl master secret 
+Example Repo for Setting up Cribl to use HashiCorp Vault to store the Cribl master secret.
+
+# CAUTION!! 
+
+This example leverages a Vault Server running in Dev mode.  All secrets are stored in memory, if you reboot, close your terminal...etc you will lose all the secrets stored in Vault.  This is an example and should only be used for testing!! 
 
 ## Pre-reqs
 - HashiCorp Vault installed
