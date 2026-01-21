@@ -42,6 +42,7 @@ cd cribl-vault-example
 6. Copy the Cribl KMS token from the output into the Cribl KMS settings.  After the Cribl KMS settings are saved observe the cribl.secret file is now stored in HashiCorp Vault.  In your browser navigate to the address below to access HashiCorp Vault
 
 mount = secret
+<br>
 path = cribl
 
 ```
