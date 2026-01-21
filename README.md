@@ -49,7 +49,7 @@ The username and password are both cribl
 
 7. In Cribl navigate to Data -> Sources and select "REST Collector" and "Add Collector"
 
-8. On the "Add Collector" Window select "Manage as JSON" and paste the contents from the "Hashi_Vault_Token_Renew.json" file.  Update the accessor and Vault token values obtained in Step 3.  Save the collector job when finished.
+8. On the "Add Collector" Window select "Configure as JSON" and paste the contents from the "Hashi_Vault_Token_Renew.json" file.  Update the accessor and Vault token values obtained in Step 3.  Save the collector job when finished.
 
 9. Schedule the job to run every 10 minutes.  The Cribl KMS token in this demo will expire every 15 minutes, so the REST/API collector job will continue to renew it before it expires.  In a real world environment these times would likely be much longer.
 
